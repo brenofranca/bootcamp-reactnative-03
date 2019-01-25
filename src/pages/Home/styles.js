@@ -18,22 +18,6 @@ const styles = StyleSheet.create({
   content: {
     padding: metrics.basePadding,
   },
-  header: {
-    alignItems: 'center',
-    backgroundColor: colors.white,
-    height: Platform.select({
-      ios: 70,
-      android: 50,
-    }),
-    justifyContent: 'center',
-    paddingTop: metrics.basePadding + 10,
-  },
-  headerTitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-  },
   input: {
     backgroundColor: colors.white,
     borderColor: colors.light,

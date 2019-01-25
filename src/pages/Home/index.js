@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import api from '~/services/api';
 
@@ -15,9 +16,17 @@ import {
   AsyncStorage,
 } from 'react-native';
 
+import Header from '~/components/Header';
+
 import styles from './styles';
 
 class Home extends Component {
+  static propTypes = {
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+    }).isRequired,
+  };
+
   state = {
     username: '',
     loading: false,
@@ -69,20 +78,31 @@ class Home extends Component {
     }
   };
 
+  onNavigateToIssues = ({ id }) => {
+    const { navigation } = this.props;
+
+    navigation.navigate('Issues', {
+      id,
+    });
+  };
+
   async fetchPersistedsRepositories() {
     const repositories = JSON.parse(await AsyncStorage.getItem('@APP3:repositories')) || [];
 
     this.setState({ loading: false, repositories });
   }
 
-  renderListItem = repository => (
+  renderListItem = ({ item }) => (
     <View style={styles.repositoryContainer}>
-      <Image source={{ uri: repository.avatar_url }} style={styles.repositoryImage} />
+      <Image source={{ uri: item.avatar_url }} style={styles.repositoryImage} />
       <View style={styles.repositoryOwnerContainer}>
-        <Text style={styles.repositoryName}>{repository.name}</Text>
-        <Text style={styles.repositoryOwner}>{repository.login}</Text>
+        <Text style={styles.repositoryName}>{item.name}</Text>
+        <Text style={styles.repositoryOwner}>{item.login}</Text>
       </View>
-      <TouchableOpacity onPress={() => {}} style={styles.buttonShowIssues}>
+      <TouchableOpacity
+        onPress={() => this.onNavigateToIssues(item)}
+        style={styles.buttonShowIssues}
+      >
         <Text style={styles.buttonIssuesText}>
           <Icon name="angle-right" size={20} color={colors.regular} />
         </Text>
@@ -97,7 +117,7 @@ class Home extends Component {
       <FlatList
         data={repositories}
         keyExtractor={item => String(item.id)}
-        renderItem={({ item }) => this.renderListItem(item)}
+        renderItem={this.renderListItem}
       />
     );
   };
@@ -107,9 +127,8 @@ class Home extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>GitIssues APP_3</Text>
-        </View>
+        <Header title="Repositórios" />
+
         <View style={styles.content}>
           <View style={styles.searchContainer}>
             <TextInput
