@@ -3,11 +3,32 @@ import { StyleSheet } from 'react-native';
 import { colors, metrics } from '~/styles';
 
 const styles = StyleSheet.create({
+  actionsContainer: {
+    backgroundColor: colors.light,
+    borderRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: metrics.baseMargin,
+    padding: metrics.basePadding / 2,
+  },
+  buttonAction: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  buttonActionText: {
+    color: colors.regular,
+  },
+  buttonActived: {
+    color: colors.dark,
+    fontWeight: 'bold',
+  },
   container: {
-    backgroundColor: colors.lighter,
     flex: 1,
   },
   content: {
+    backgroundColor: colors.lighter,
+    flex: 1,
+    flexDirection: 'column',
     padding: metrics.basePadding,
   },
   errorContainer: {

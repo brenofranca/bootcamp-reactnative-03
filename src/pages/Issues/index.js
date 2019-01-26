@@ -22,13 +22,14 @@ import styles from './styles';
 class Issues extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
-      navigate: PropTypes.func.isRequired,
+      getParam: PropTypes.func,
     }).isRequired,
   };
 
   state = {
     data: [],
     error: '',
+    filter: 'all',
     loading: true,
     refreshing: false,
   };
@@ -39,13 +40,13 @@ class Issues extends Component {
 
   fetchIssues = async () => {
     const { navigation } = this.props;
-    const id = navigation.getParam('id');
+    const id = navigation.getParam('id') || 80149262;
 
     try {
       const { data } = await api.get(`/repositories/${id}/issues`);
 
       this.setState({ data, loading: false });
-    } catch (error) {
+    } catch (_err) {
       this.setState({ error: 'O usuário não possui issues!' });
     } finally {
       this.setState({ loading: false });
@@ -54,7 +55,7 @@ class Issues extends Component {
 
   onRedirectToIssue = ({ url }) => {
     Linking.openURL(url);
-  }
+  };
 
   renderListItem = ({ item }) => (
     <View style={styles.listItemContainer}>
@@ -70,7 +71,10 @@ class Issues extends Component {
         </Text>
         <Text style={styles.listItemLogin}>{item.user.login}</Text>
       </View>
-      <TouchableOpacity onPress={() => this.onRedirectToIssue(item)} style={styles.buttonShow}>
+      <TouchableOpacity
+        onPress={() => this.onRedirectToIssue(item)}
+        style={styles.buttonShow}
+      >
         <Text style={styles.buttonText}>
           <Icon name="angle-right" size={20} color={colors.regular} />
         </Text>
@@ -92,8 +96,27 @@ class Issues extends Component {
     );
   };
 
+  onFilterIssues = async (filter) => {
+    this.setState({ filter, loading: true });
+
+    const { navigation } = this.props;
+    const id = navigation.getParam('id') || 80149262;
+
+    try {
+      const { data } = await api.get(
+        `/repositories/${id}/issues?state=${filter}`,
+      );
+
+      this.setState({ data });
+    } catch (_err) {
+      this.setState({ error: 'Erro ao recuperar as Issues' });
+    } finally {
+      this.setState({ loading: false });
+    }
+  };
+
   render() {
-    const { loading, error } = this.state;
+    const { loading, error, filter } = this.state;
 
     return (
       <View style={styles.container}>
@@ -105,15 +128,54 @@ class Issues extends Component {
           </View>
         )}
 
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" />
+        <View style={styles.content}>
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity
+              style={styles.buttonAction}
+              onPress={() => this.onFilterIssues('all')}
+            >
+              <Text
+                style={[
+                  styles.buttonActionText,
+                  filter === 'all' && styles.buttonActived,
+                ]}
+              >
+                Todas
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonAction}
+              onPress={() => this.onFilterIssues('open')}
+            >
+              <Text
+                style={[
+                  styles.buttonActionText,
+                  filter === 'open' && styles.buttonActived,
+                ]}
+              >
+                Abertas
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonAction}
+              onPress={() => this.onFilterIssues('closed')}
+            >
+              <Text
+                style={[
+                  styles.buttonActionText,
+                  filter === 'closed' && styles.buttonActived,
+                ]}
+              >
+                Fechadas
+              </Text>
+            </TouchableOpacity>
           </View>
-        ) : (
-          <View style={styles.content} loading={!!loading}>
-            {this.renderList()}
-          </View>
-        )}
+          {loading ? (
+            <ActivityIndicator size="large" style={styles.loadingContainer} />
+          ) : (
+            this.renderList()
+          )}
+        </View>
       </View>
     );
   }

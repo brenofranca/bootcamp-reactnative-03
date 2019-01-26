@@ -5,8 +5,8 @@ import Issues from './pages/Issues';
 
 const Routes = createAppContainer(
   createSwitchNavigator({
-    Home,
     Issues,
+    Home,
   }),
 );
 
