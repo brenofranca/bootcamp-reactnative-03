@@ -10,13 +10,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flexDirection: 'row',
     height: 54 + getStatusBarHeight(),
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: metrics.basePadding,
     paddingTop: getStatusBarHeight(),
   },
+
+  icon: {
+    color: colors.darker,
+  },
+
   title: {
     color: colors.darker,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });

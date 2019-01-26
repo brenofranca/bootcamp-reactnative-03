@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { colors, metrics } from '~/styles';
 
@@ -9,6 +9,15 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: metrics.basePadding,
+  },
+  errorContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  errorText: {
+    fontSize: 17,
+    fontWeight: 'bold',
   },
   listItemContainer: {
     alignItems: 'center',
@@ -39,6 +48,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: 'bold',
     paddingRight: metrics.basePadding,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 
